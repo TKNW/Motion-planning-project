@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Barracuda.ONNX;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +12,8 @@ public class Manager : MonoBehaviour
     public int ObstacleAmount = 10;
     public GameObject[] ObstacleType = new GameObject[2];
     public GameObject Goal = null;
-    public GameObject Player = null;
+    private GameObject Player = null;
+    public GameObject StartPoint = null;
     private List<GameObject> GeneratedObstacles = new List<GameObject>();
 
     private bool TooClose(GameObject obj,double x, double z, double maxdistance = 2.0f) 
@@ -67,11 +67,28 @@ public class Manager : MonoBehaviour
         }
     }
 
+    private void Reset()
+    {
+        //CharacterController會覆蓋Transform，所以要先關掉再改
+        Player.GetComponent<CharacterController>().enabled = false;
+        Player.transform.position = StartPoint.transform.position;
+        Player.transform.rotation = StartPoint.transform.rotation;
+        Player.GetComponent<CharacterController>().enabled = true;
+        foreach (GameObject obj in GeneratedObstacles)
+        {
+           Destroy(obj);
+        }
+        GeneratedObstacles.Clear();
+        GenerateObstacle();
+    }
+
     void ArriveGoal() 
     {
-        SceneManager.LoadScene("Path");
+        Reset();
     }
-    void Awake()
+
+    // Start is called before the first frame update
+    void Start()
     {
         Goal = GameObject.Find("Goal");
         if (Goal == null)
@@ -83,10 +100,11 @@ public class Manager : MonoBehaviour
         {
             Debug.LogError("Can't find Player.", Player);
         }
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
+        StartPoint = GameObject.Find("StartPoint");
+        if (StartPoint == null)
+        {
+            Debug.LogError("Can't find StartPoint.", StartPoint);
+        }
         GenerateObstacle();
     }
 
