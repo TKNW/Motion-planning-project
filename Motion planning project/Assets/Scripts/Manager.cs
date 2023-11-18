@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.MLAgents;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,23 +13,23 @@ public class Manager : MonoBehaviour
     public int ObstacleAmount = 10;
     public GameObject[] ObstacleType = new GameObject[2];
     public GameObject Goal = null;
-    private GameObject Player = null;
+    public GameObject Player = null;
     public GameObject StartPoint = null;
     private List<GameObject> GeneratedObstacles = new List<GameObject>();
-
+    
     private bool TooClose(GameObject obj,double x, double z, double maxdistance = 2.0f) 
     {
         if(obj == null)
             return false;
         bool result = false;
-        double XPow = Math.Pow(obj.transform.position.x - x, 2);
-        double ZPow = Math.Pow(obj.transform.position.z - z, 2);
+        double XPow = Math.Pow(obj.transform.localPosition.x - x, 2);
+        double ZPow = Math.Pow(obj.transform.localPosition.z - z, 2);
         double dis = Math.Sqrt(XPow + ZPow);
         if (dis <= maxdistance)
             result = true;
         return result;
     }
-    private void GenerateObstacle()
+    public void GenerateObstacle()
     {
         GameObject NewObscale;
         double newx = 0.0, newz = 0.0;
@@ -71,8 +72,8 @@ public class Manager : MonoBehaviour
     {
         //CharacterController會覆蓋Transform，所以要先關掉再改
         Player.GetComponent<CharacterController>().enabled = false;
-        Player.transform.position = StartPoint.transform.position;
-        Player.transform.rotation = StartPoint.transform.rotation;
+        Player.transform.localPosition = StartPoint.transform.localPosition;
+        Player.transform.localRotation = StartPoint.transform.localRotation;
         Player.GetComponent<CharacterController>().enabled = true;
         foreach (GameObject obj in GeneratedObstacles)
         {
@@ -90,22 +91,7 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Goal = GameObject.Find("Goal");
-        if (Goal == null)
-        {
-            Debug.LogError("Can't find Goal.", Goal);
-        }
-        Player = GameObject.Find("PlayerArmature");
-        if (Player == null)
-        {
-            Debug.LogError("Can't find Player.", Player);
-        }
-        StartPoint = GameObject.Find("StartPoint");
-        if (StartPoint == null)
-        {
-            Debug.LogError("Can't find StartPoint.", StartPoint);
-        }
-        GenerateObstacle();
+        
     }
 
     // Update is called once per frame
