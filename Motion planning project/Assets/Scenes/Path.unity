@@ -159,6 +159,7 @@ MonoBehaviour:
   Goal: {fileID: 1601149238}
   Player: {fileID: 1119632234}
   StartPoint: {fileID: 1550039324}
+  GenerateObstacleOnStart: 1
 --- !u!4 &43041182
 Transform:
   m_ObjectHideFlags: 0

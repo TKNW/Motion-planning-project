@@ -15,6 +15,7 @@ public class Manager : MonoBehaviour
     public GameObject Goal = null;
     public GameObject Player = null;
     public GameObject StartPoint = null;
+    public bool GenerateObstacleOnStart = false;
     private List<GameObject> GeneratedObstacles = new List<GameObject>();
     
     private bool TooClose(GameObject obj,double x, double z, double maxdistance = 2.0f) 
@@ -94,7 +95,10 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(GenerateObstacleOnStart == true)
+        {
+            GenerateObstacle();
+        }
     }
 
     // Update is called once per frame
