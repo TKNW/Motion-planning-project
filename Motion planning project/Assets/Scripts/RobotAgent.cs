@@ -26,6 +26,7 @@ public class RobotAgent : Agent
 
     private float Distance = 0.0f;
     private float PreDistance = 0.0f;
+    private float Angle = 0.0f;
     private bool Regenerate = true;
     
     private float CountDistance(GameObject obj1, GameObject obj2) 
@@ -36,6 +37,19 @@ public class RobotAgent : Agent
         double XPow = Math.Pow(obj1.transform.localPosition.x - obj2.transform.localPosition.x, 2);
         double ZPow = Math.Pow(obj1.transform.localPosition.z - obj2.transform.localPosition.z, 2);
         result = (float)Math.Sqrt(XPow + ZPow);
+        return result;
+    }
+    private float CountAngle(GameObject obj1, GameObject obj2)
+    {
+        if (obj1 == null || obj2 == null)
+            return float.MaxValue;
+        float result = 0.0f;
+        float rad = obj1.transform.localRotation.eulerAngles.y * Mathf.Deg2Rad;
+        Vector3 vec1 = obj2.transform.localPosition - obj1.transform.localPosition;
+        Vector3 vec2 = new Vector3(Mathf.Sin(rad),
+                                   0,
+                                   Mathf.Cos(rad));
+        result = Vector3.Angle(vec1, vec2);
         return result;
     }
     // Start is called before the first frame update
@@ -61,16 +75,16 @@ public class RobotAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(Distance);
+        sensor.AddObservation(Angle / 180);
         sensor.AddObservation(Goal.transform.localPosition);
         sensor.AddObservation(transform.localPosition);
-        sensor.AddObservation(transform.rotation.eulerAngles.y);
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         //Time penalty
         if(GetCumulativeReward() >= -1.0f)
-            AddReward(-0.0005f);
+            AddReward(-0.002f);
 
         int movement = actionBuffers.DiscreteActions[0];
         if (movement == (int)Move.TurnLeft)
@@ -95,14 +109,18 @@ public class RobotAgent : Agent
         {
             Ani.SetBool(RunaniID, false);
         }
-        Distance = CountDistance(this.gameObject,Goal);
+        Distance = CountDistance(this.gameObject, Goal);
         if(Distance < 1.5f)
         {
             SetReward(1.0f);
             Regenerate = true;
             EndEpisode();
         }
-        if (Distance < PreDistance && GetCumulativeReward() <= 0.5f)
+        Angle = CountAngle(this.gameObject, Goal);
+        //Debug.Log(Angle);
+        if (Distance < PreDistance 
+            && Angle <= 45
+            && GetCumulativeReward() <= 0.5f)
         {
             //Debug.Log("Dis = " + Distance + " Pre = " + PreDistance);
             AddReward(0.01f);
