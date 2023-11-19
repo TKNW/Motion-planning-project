@@ -68,24 +68,27 @@ public class Manager : MonoBehaviour
         }
     }
 
-    private void Reset()
+    private void EnvReset(bool KillObstacle = true)
     {
         //CharacterController會覆蓋Transform，所以要先關掉再改
         Player.GetComponent<CharacterController>().enabled = false;
         Player.transform.localPosition = StartPoint.transform.localPosition;
         Player.transform.localRotation = StartPoint.transform.localRotation;
         Player.GetComponent<CharacterController>().enabled = true;
-        foreach (GameObject obj in GeneratedObstacles)
+        if (KillObstacle == true)
         {
-           Destroy(obj);
+            foreach (GameObject obj in GeneratedObstacles)
+            {
+                Destroy(obj);
+            }
+            GeneratedObstacles.Clear();
+            GenerateObstacle();
         }
-        GeneratedObstacles.Clear();
-        GenerateObstacle();
     }
 
     void ArriveGoal() 
     {
-        Reset();
+        EnvReset();
     }
 
     // Start is called before the first frame update

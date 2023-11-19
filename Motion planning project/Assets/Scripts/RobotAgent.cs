@@ -25,7 +25,19 @@ public class RobotAgent : Agent
     private int RunaniID = 0;
 
     private float Distance = 0.0f;
+    private float PreDistance = 0.0f;
+    private bool Regenerate = true;
     
+    private float CountDistance(GameObject obj1, GameObject obj2) 
+    {
+        if (obj1 == null || obj2 == null)
+            return float.MaxValue;
+        float result = 0.0f;
+        double XPow = Math.Pow(obj1.transform.localPosition.x - obj2.transform.localPosition.x, 2);
+        double ZPow = Math.Pow(obj1.transform.localPosition.z - obj2.transform.localPosition.z, 2);
+        result = (float)Math.Sqrt(XPow + ZPow);
+        return result;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +54,8 @@ public class RobotAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        EnvManager.SendMessage("Reset");
+        EnvManager.SendMessage("EnvReset", Regenerate);
+        PreDistance = CountDistance(this.gameObject, Goal);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -56,7 +69,8 @@ public class RobotAgent : Agent
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         //Time penalty
-        AddReward(-0.0005f);
+        if(GetCumulativeReward() >= -1.0f)
+            AddReward(-0.0005f);
 
         int movement = actionBuffers.DiscreteActions[0];
         if (movement == (int)Move.TurnLeft)
@@ -81,15 +95,19 @@ public class RobotAgent : Agent
         {
             Ani.SetBool(RunaniID, false);
         }
-        double XPow = Math.Pow(Goal.transform.localPosition.x - transform.localPosition.x, 2);
-        double ZPow = Math.Pow(Goal.transform.localPosition.z - transform.localPosition.z, 2);
-        Distance = (float)Math.Sqrt(XPow + ZPow);
+        Distance = CountDistance(this.gameObject,Goal);
         if(Distance < 1.5f)
         {
             SetReward(1.0f);
+            Regenerate = true;
             EndEpisode();
         }
-        
+        if (Distance < PreDistance && GetCumulativeReward() <= 0.5f)
+        {
+            //Debug.Log("Dis = " + Distance + " Pre = " + PreDistance);
+            AddReward(0.01f);
+        }
+        PreDistance = Distance;
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
@@ -104,7 +122,8 @@ public class RobotAgent : Agent
     {
         if (collision.gameObject.tag == "Obstacle")
         {
-            //AddReward(-0.5f);
+            AddReward(-0.5f);
+            Regenerate = false;
             EndEpisode();
         }
     }
