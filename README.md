@@ -1,6 +1,6 @@
 # Motion-planning-project
 # 注意事項：
-這版本是ML版本，沒事請不要動它，感謝。
+Scene裡面Path_ML是mlagents用的場景，請盡量不要去改它，傳統方法請使用Path，感謝。
 
 ## Unity版本：
 2022.3.12f1
