@@ -75,7 +75,7 @@ public class RobotAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(Distance);
-        sensor.AddObservation(Angle / 180);
+        sensor.AddObservation(Angle / 180.0f);
         sensor.AddObservation(Goal.transform.localPosition);
         sensor.AddObservation(transform.localPosition);
     }
@@ -110,7 +110,7 @@ public class RobotAgent : Agent
             Ani.SetBool(RunaniID, false);
         }
         Distance = CountDistance(this.gameObject, Goal);
-        if(Distance < 1.5f)
+        if(Distance < 1.3f)
         {
             SetReward(1.0f);
             Regenerate = true;
