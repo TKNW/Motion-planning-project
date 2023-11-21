@@ -112,7 +112,14 @@ public class RobotAgent : Agent
         Distance = CountDistance(this.gameObject, Goal);
         if(Distance < 1.3f)
         {
-            SetReward(1.0f);
+            if (GetCumulativeReward() >= 0.0f)
+            {
+                SetReward(1.0f); 
+            }
+            else
+            {
+                AddReward(1.0f);
+            }
             Regenerate = true;
             EndEpisode();
         }
@@ -138,11 +145,13 @@ public class RobotAgent : Agent
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Obstacle")
+        if (collision.gameObject.tag == "Obstacle"
+            && GetCumulativeReward() >= -1.0f)
         {
-            AddReward(-0.5f);
-            Regenerate = false;
-            EndEpisode();
+
+            AddReward(-0.1f);
+            //Regenerate = false;
+            //EndEpisode();
         }
     }
     private void OnFootstep(AnimationEvent animationEvent)
