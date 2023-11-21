@@ -110,17 +110,11 @@ public class RobotAgent : Agent
             Ani.SetBool(RunaniID, false);
         }
         Distance = CountDistance(this.gameObject, Goal);
-        if(Distance < 1.3f)
+        if(Distance < 1.4f)
         {
-            if (GetCumulativeReward() >= 0.0f)
-            {
-                SetReward(1.0f); 
-            }
-            else
-            {
-                AddReward(1.0f);
-            }
+            AddReward(0.5f);
             Regenerate = true;
+            Debug.Log(GetCumulativeReward());
             EndEpisode();
         }
         Angle = CountAngle(this.gameObject, Goal);
@@ -130,7 +124,7 @@ public class RobotAgent : Agent
             && GetCumulativeReward() <= 0.5f)
         {
             //Debug.Log("Dis = " + Distance + " Pre = " + PreDistance);
-            AddReward(0.01f);
+            AddReward(0.05f);
         }
         PreDistance = Distance;
     }
@@ -143,12 +137,11 @@ public class RobotAgent : Agent
         else discreteActionsOut[0] = (int)Move.Stop;
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag == "Obstacle"
             && GetCumulativeReward() >= -1.0f)
         {
-
             AddReward(-0.1f);
             //Regenerate = false;
             //EndEpisode();
