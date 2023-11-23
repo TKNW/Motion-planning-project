@@ -83,8 +83,7 @@ public class RobotAgent : Agent
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         //Time penalty
-        if(GetCumulativeReward() >= -1.0f)
-            AddReward(-0.002f);
+        AddReward(-0.002f);
 
         int movement = actionBuffers.DiscreteActions[0];
         if (movement == (int)Move.TurnLeft)
@@ -112,7 +111,7 @@ public class RobotAgent : Agent
         Distance = CountDistance(this.gameObject, Goal);
         if(Distance < 1.4f)
         {
-            AddReward(0.5f);
+            AddReward(1.0f);
             Regenerate = true;
             Debug.Log(GetCumulativeReward());
             EndEpisode();
@@ -120,11 +119,10 @@ public class RobotAgent : Agent
         Angle = CountAngle(this.gameObject, Goal);
         //Debug.Log(Angle);
         if (Distance < PreDistance 
-            && Angle <= 45
-            && GetCumulativeReward() <= 0.5f)
+            && Angle <= 45)
         {
             //Debug.Log("Dis = " + Distance + " Pre = " + PreDistance);
-            AddReward(0.05f);
+            AddReward(0.04f);
         }
         PreDistance = Distance;
     }
@@ -139,10 +137,9 @@ public class RobotAgent : Agent
 
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Obstacle"
-            && GetCumulativeReward() >= -1.0f)
+        if (collision.gameObject.tag == "Obstacle")
         {
-            AddReward(-0.1f);
+            AddReward(-0.2f);
             //Regenerate = false;
             //EndEpisode();
         }
