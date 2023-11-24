@@ -118,11 +118,15 @@ public class RobotAgent : Agent
         }
         Angle = CountAngle(this.gameObject, Goal);
         //Debug.Log(Angle);
-        if (Distance < PreDistance 
+        if (Distance < PreDistance
             && Angle <= 45)
         {
             //Debug.Log("Dis = " + Distance + " Pre = " + PreDistance);
             AddReward(0.04f);
+        }
+        else
+        {
+            AddReward(-0.04f);
         }
         PreDistance = Distance;
     }
