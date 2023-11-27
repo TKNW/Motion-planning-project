@@ -16,8 +16,9 @@ public class Manager : MonoBehaviour
     public GameObject Player = null;
     public GameObject StartPoint = null;
     public bool GenerateObstacleOnStart = false;
+    public bool MoveGoal = false;
+    public bool ResetPlayer = true;
     private List<GameObject> GeneratedObstacles = new List<GameObject>();
-    
     private bool TooClose(GameObject obj,double x, double z, double maxdistance = 2.0f) 
     {
         if(obj == null)
@@ -72,10 +73,17 @@ public class Manager : MonoBehaviour
     private void EnvReset(bool KillObstacle = true)
     {
         //CharacterController會覆蓋Transform，所以要先關掉再改
-        Player.GetComponent<CharacterController>().enabled = false;
-        Player.transform.localPosition = StartPoint.transform.localPosition;
-        Player.transform.localRotation = StartPoint.transform.localRotation;
-        Player.GetComponent<CharacterController>().enabled = true;
+        if (ResetPlayer == true)
+        {
+            Player.GetComponent<CharacterController>().enabled = false;
+            Player.transform.localPosition = StartPoint.transform.localPosition;
+            Player.transform.localRotation = StartPoint.transform.localRotation;
+            Player.GetComponent<CharacterController>().enabled = true;
+        }
+        if(MoveGoal == true)
+        {
+            RegenerateGoal();
+        }
         if (KillObstacle == true)
         {
             foreach (GameObject obj in GeneratedObstacles)
@@ -87,11 +95,50 @@ public class Manager : MonoBehaviour
         }
     }
 
+    void RegenerateGoal()
+    {
+        bool GoodResult = false;
+        double newx = 0.0, newz = 0.0;
+        while (!GoodResult)
+        {
+            newx = UnityEngine.Random.Range(2, 38);
+            newz = UnityEngine.Random.Range(2, 38);
+            foreach (GameObject obj in GeneratedObstacles)
+            {
+                if (TooClose(obj, newx, newz, 5.0))
+                {
+                    newx = -1;
+                    break;
+                }
+            }
+            if (newx == -1)
+            {
+                continue;
+            }
+            if (TooClose(Player, newx, newz, 20.0) == false)
+            {
+                GoodResult = true;
+            }
+        }
+        Goal.transform.position = new Vector3((float)newx, 0.3f, (float)newz);
+    }
     void ArriveGoal() 
     {
         EnvReset();
     }
-
+    void SetResetPlayer(bool reset)
+    {
+        ResetPlayer = reset;
+    }
+    void SetMoveGoal(bool move) 
+    {
+        MoveGoal = move;
+    }
+    void SetStartPoint(Transform newTransfrom)
+    {
+        StartPoint.transform.position = newTransfrom.position;
+        StartPoint.transform.rotation = newTransfrom.rotation;
+    }
     // Start is called before the first frame update
     void Start()
     {

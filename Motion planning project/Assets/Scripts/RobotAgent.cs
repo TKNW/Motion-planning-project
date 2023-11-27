@@ -6,6 +6,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using UnityEngine.InputSystem.XR;
+using UnityEditor.Rendering.LookDev;
 
 public class RobotAgent : Agent
 {
@@ -70,6 +71,8 @@ public class RobotAgent : Agent
     {
         EnvManager.SendMessage("EnvReset", Regenerate);
         Regenerate = false;
+        EnvManager.SendMessage("SetResetPlayer", true);
+        EnvManager.SendMessage("SetMoveGoal", false);
         PreDistance = CountDistance(this.gameObject, Goal);
     }
 
@@ -118,6 +121,9 @@ public class RobotAgent : Agent
             AddReward(20.0f);
             Regenerate = true;
             Debug.Log(GetCumulativeReward());
+            EnvManager.SendMessage("SetResetPlayer", false);
+            EnvManager.SendMessage("SetMoveGoal", true);
+            EnvManager.SendMessage("SetStartPoint", this.gameObject.transform);
             EndEpisode();
         }
         Angle = CountAngle(this.gameObject, Goal);
@@ -141,8 +147,8 @@ public class RobotAgent : Agent
         if (collision.gameObject.tag == "Obstacle")
         {
             AddReward(-0.3f);
-            //Regenerate = false;
-            //EndEpisode();
+            Regenerate = false;
+            EndEpisode();
         }
     }
     private void OnFootstep(AnimationEvent animationEvent)
