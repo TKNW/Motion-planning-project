@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90db7c264c6fd9540aeb0b05e2510139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObstacleAmount: 25
+  ObstacleAmount: 20
   ObstacleType:
   - {fileID: 7925310196788775475, guid: a627cee90f2855d44b581bf40f710455, type: 3}
   - {fileID: 5873613192375523024, guid: c75c61437b949f74d8fe3fb84ffdf73b, type: 3}
@@ -647,7 +647,7 @@ PrefabInstance:
     - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 7fc21b77061a9c84694543e284bb1ec8, type: 3}
+      objectReference: {fileID: 5022602860645237092, guid: 12a8eb2f6559c9a468b5cdaf393f84aa, type: 3}
     - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_BehaviorType
       value: 2
@@ -655,6 +655,14 @@ PrefabInstance:
     - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_InferenceDevice
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
+      propertyPath: m_BrainParameters.VectorObservationSize
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
+      propertyPath: m_BrainParameters.NumStackedVectorObservations
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3893294197879345259, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_LocalPosition.x
@@ -702,15 +710,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6199229016162244856, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_GridSize.x
-      value: 50
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6199229016162244856, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_GridSize.z
-      value: 50
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6199229016162244856, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_ShowGizmos
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6199229016162244856, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_CellScale.x

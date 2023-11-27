@@ -69,21 +69,25 @@ public class RobotAgent : Agent
     public override void OnEpisodeBegin()
     {
         EnvManager.SendMessage("EnvReset", Regenerate);
+        Regenerate = false;
         PreDistance = CountDistance(this.gameObject, Goal);
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(Distance);
-        sensor.AddObservation(Angle / 180.0f);
-        sensor.AddObservation(Goal.transform.localPosition);
-        sensor.AddObservation(transform.localPosition);
+        //sensor.AddObservation(Distance);
+        sensor.AddObservation(Angle);
+        sensor.AddObservation(transform.localPosition.x);
+        sensor.AddObservation(transform.localPosition.z);
+        sensor.AddObservation(Goal.transform.localPosition.x);
+        sensor.AddObservation(Goal.transform.localPosition.z);
+        sensor.AddObservation(Goal.transform.localPosition - transform.localPosition);
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         //Time penalty
-        AddReward(-0.002f);
+        AddReward(-0.005f);
 
         int movement = actionBuffers.DiscreteActions[0];
         if (movement == (int)Move.TurnLeft)
@@ -111,24 +115,17 @@ public class RobotAgent : Agent
         Distance = CountDistance(this.gameObject, Goal);
         if(Distance < 1.4f)
         {
-            AddReward(1.0f);
+            AddReward(20.0f);
             Regenerate = true;
             Debug.Log(GetCumulativeReward());
             EndEpisode();
         }
         Angle = CountAngle(this.gameObject, Goal);
-        //Debug.Log(Angle);
-        if (Distance < PreDistance
-            && Angle <= 45)
+        if(Angle <= 45.0f)
         {
-            //Debug.Log("Dis = " + Distance + " Pre = " + PreDistance);
-            AddReward(0.04f);
+            AddReward(0.01f);
         }
-        else
-        {
-            AddReward(-0.04f);
-        }
-        PreDistance = Distance;
+        AddReward(-(Distance/PreDistance) * 0.1f);
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
@@ -143,7 +140,7 @@ public class RobotAgent : Agent
     {
         if (collision.gameObject.tag == "Obstacle")
         {
-            AddReward(-0.2f);
+            AddReward(-0.3f);
             //Regenerate = false;
             //EndEpisode();
         }
