@@ -147,8 +147,8 @@ public class RobotAgent : Agent
         if (collision.gameObject.tag == "Obstacle")
         {
             AddReward(-0.3f);
-            Regenerate = false;
-            EndEpisode();
+            //Regenerate = false;
+            //EndEpisode();
         }
     }
     private void OnFootstep(AnimationEvent animationEvent)
