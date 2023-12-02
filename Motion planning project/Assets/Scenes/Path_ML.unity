@@ -649,10 +649,10 @@ PrefabInstance:
     - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 0facef6cc725e8b4db0fe8ec80de375f, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_BehaviorType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6077262628654958898, guid: 2a82a978bb4bebb4eb403742d92a31ba, type: 3}
       propertyPath: m_InferenceDevice
