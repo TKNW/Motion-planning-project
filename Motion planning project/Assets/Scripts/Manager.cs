@@ -17,8 +17,7 @@ public class Manager : MonoBehaviour
     public GameObject StartPoint = null;
     public bool GenerateObstacleOnStart = false;
     public bool MoveGoal = false;
-    public bool ResetPlayer = true;
-    private List<GameObject> GeneratedObstacles = new List<GameObject>();
+    static public List<GameObject> GeneratedObstacles = new List<GameObject>();
     private bool TooClose(GameObject obj,double x, double z, double maxdistance = 2.0f) 
     {
         if(obj == null)
@@ -73,7 +72,7 @@ public class Manager : MonoBehaviour
     private void EnvReset(bool KillObstacle = true)
     {
         //CharacterController會覆蓋Transform，所以要先關掉再改
-        if (ResetPlayer == true)
+        if (MoveGoal == false)
         {
             Player.GetComponent<CharacterController>().enabled = false;
             Player.transform.localPosition = StartPoint.transform.localPosition;
@@ -126,16 +125,13 @@ public class Manager : MonoBehaviour
     {
         EnvReset();
     }
-    void SetResetPlayer(bool reset)
+    void SetMoveGoal(bool set)
     {
-        ResetPlayer = reset;
-    }
-    void SetMoveGoal(bool move) 
-    {
-        MoveGoal = move;
+        MoveGoal = set;
     }
     void SetStartPoint(Transform newTransfrom)
     {
+        if(MoveGoal == false) { return; }
         StartPoint.transform.position = newTransfrom.position;
         StartPoint.transform.rotation = newTransfrom.rotation;
     }

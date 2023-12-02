@@ -71,8 +71,6 @@ public class RobotAgent : Agent
     {
         EnvManager.SendMessage("EnvReset", Regenerate);
         Regenerate = false;
-        EnvManager.SendMessage("SetResetPlayer", true);
-        EnvManager.SendMessage("SetMoveGoal", false);
         PreDistance = CountDistance(this.gameObject, Goal);
     }
 
@@ -90,7 +88,7 @@ public class RobotAgent : Agent
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         //Time penalty
-        AddReward(-0.002f);
+        AddReward(-0.005f);
 
         int movement = actionBuffers.DiscreteActions[0];
         if (movement == (int)Move.TurnLeft)
@@ -116,23 +114,20 @@ public class RobotAgent : Agent
             Ani.SetBool(RunaniID, false);
         }
         Distance = CountDistance(this.gameObject, Goal);
-        if(Distance < 1.4f)
+        if (Distance < 1.4f)
         {
-            AddReward(10.0f);
+            AddReward(20.0f);
             Regenerate = true;
             Debug.Log(GetCumulativeReward());
-            EnvManager.SendMessage("SetResetPlayer", false);
-            EnvManager.SendMessage("SetMoveGoal", true);
             EnvManager.SendMessage("SetStartPoint", this.gameObject.transform);
             EndEpisode();
         }
         Angle = CountAngle(this.gameObject, Goal);
-        if (Distance < PreDistance
-            && Angle <= 45)
+        if (Angle <= 45.0f)
         {
-            //Debug.Log("Dis = " + Distance + " Pre = " + PreDistance);
             AddReward(0.01f);
         }
+        AddReward(-(Distance / PreDistance) * 0.1f);
     }
     public override void Heuristic(in ActionBuffers actionsOut)
     {
