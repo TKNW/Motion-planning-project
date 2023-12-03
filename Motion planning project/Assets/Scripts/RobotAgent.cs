@@ -20,9 +20,13 @@ public class RobotAgent : Agent
     public GameObject Goal = null;
     public GameObject EnvManager = null;
     public float MoveSpeed = 1.0f;
+    public bool DrawRoute = false;
+    public Material RouteColor;
 
     private CharacterController CController = null;
     private Animator Ani = null;
+    private List<Vector3> Route = new List<Vector3>();
+    private LineRenderer RouteRenderer = null;
     private int RunaniID = 0;
 
     private float Distance = 0.0f;
@@ -53,6 +57,21 @@ public class RobotAgent : Agent
         result = Vector3.Angle(vec1, vec2);
         return result;
     }
+
+    private void UpdateDrawLine(ref LineRenderer renderer)
+    {
+        if(DrawRoute == false) return;
+        if(renderer == null)
+        {
+            renderer = new GameObject("Line").AddComponent<LineRenderer>();
+            renderer.material = RouteColor;
+            renderer.startWidth = 0.25f;
+            renderer.endWidth = 0.25f;
+            renderer.useWorldSpace = true;
+        }
+        renderer.positionCount = Route.Count;
+        renderer.SetPositions(Route.ToArray());
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -72,8 +91,9 @@ public class RobotAgent : Agent
         EnvManager.SendMessage("EnvReset", Regenerate);
         Regenerate = false;
         PreDistance = CountDistance(this.gameObject, Goal);
+        Route.Add(new Vector3(transform.position.x, 0.5f, transform.position.z));
     }
-
+    
     public override void CollectObservations(VectorSensor sensor)
     {
         //sensor.AddObservation(Distance);
@@ -108,6 +128,8 @@ public class RobotAgent : Agent
             CController.Move(new Vector3(Mathf.Sin(rad) * MoveSpeed, 
                                          0, 
                                          Mathf.Cos(rad) * MoveSpeed));
+            Route.Add(new Vector3(transform.position.x, 0.5f, transform.position.z));
+            UpdateDrawLine(ref RouteRenderer);
         }
         if(movement == (int)Move.Stop)
         {
@@ -120,6 +142,9 @@ public class RobotAgent : Agent
             Regenerate = true;
             Debug.Log(GetCumulativeReward());
             EnvManager.SendMessage("SetStartPoint", this.gameObject.transform);
+            Destroy(RouteRenderer.gameObject);
+            Route.Add(Goal.transform.position);
+            Route.Clear();
             EndEpisode();
         }
         Angle = CountAngle(this.gameObject, Goal);

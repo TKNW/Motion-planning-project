@@ -15,9 +15,20 @@ public class Manager : MonoBehaviour
     public GameObject Goal = null;
     public GameObject Player = null;
     public GameObject StartPoint = null;
+    public PRM PrmScript = null;
     public bool GenerateObstacleOnStart = false;
     public bool MoveGoal = false;
+    public bool UsePRM = false;
+    public bool UseRRT = false;
+    public bool UseDij = false;
+    public Material RRTColor;
+    public Material PRMColor;
+    private LineRenderer RRTlineRenderer = null;
+    private LineRenderer PRMLineRenderer = null;
     static public List<GameObject> GeneratedObstacles = new List<GameObject>();
+
+    private List<Vector3> RRTPoint = new List<Vector3>();
+    private List<Vector3> PRMPoint = new List<Vector3>();
     private bool TooClose(GameObject obj,double x, double z, double maxdistance = 2.0f) 
     {
         if(obj == null)
@@ -92,8 +103,45 @@ public class Manager : MonoBehaviour
             GeneratedObstacles.Clear();
             GenerateObstacle();
         }
-    }
+        if(UseRRT == true)
+        {
+            if (RRTlineRenderer != null)
+            {
+                Destroy(RRTlineRenderer.gameObject);
+            }
+            PrmScript.SendMessage("ResetPoint");
+            PrmScript.SendMessage("rrt");
+            RRTPoint = PrmScript.GetRRTResult();
+            RRTPoint.Insert(0, StartPoint.transform.position);
+            DrawLine(RRTPoint, ref RRTlineRenderer, RRTColor);
 
+        }
+        if(UsePRM == true)
+        {
+            if(PRMLineRenderer != null)
+            { 
+                Destroy(PRMLineRenderer.gameObject);
+            }
+            PrmScript.SendMessage("ResetPoint");
+            PrmScript.SendMessage("prm");
+            PRMPoint = PrmScript.GetPRMResult();
+            PRMPoint.Insert(0, StartPoint.transform.position);
+            DrawLine(PRMPoint, ref PRMLineRenderer, PRMColor);
+        }
+    }
+    void DrawLine(List<Vector3> vectors, ref LineRenderer renderer, Material material)
+    {
+        renderer = new GameObject("Line").AddComponent<LineRenderer>();
+        renderer.material = material;
+        renderer.startWidth = 0.25f;
+        renderer.endWidth = 0.25f;
+        renderer.positionCount = vectors.Count;
+        renderer.useWorldSpace = true;
+        for(int i = 0; i < vectors.Count; i++)
+        {
+            renderer.SetPosition(i, vectors[i]);
+        }
+    }
     void RegenerateGoal()
     {
         bool GoodResult = false;
