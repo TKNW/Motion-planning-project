@@ -164,7 +164,7 @@ MonoBehaviour:
   PrmScript: {fileID: 43041183}
   DijScript: {fileID: 43041184}
   GenerateObstacleOnStart: 0
-  MoveGoal: 0
+  MoveGoal: 1
   UsePRM: 1
   UseRRT: 1
   UseDij: 1

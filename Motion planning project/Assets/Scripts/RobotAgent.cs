@@ -6,7 +6,6 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using UnityEngine.InputSystem.XR;
-using UnityEditor.Rendering.LookDev;
 
 public class RobotAgent : Agent
 {
@@ -138,11 +137,14 @@ public class RobotAgent : Agent
         Distance = CountDistance(this.gameObject, Goal);
         if (Distance < 1.4f)
         {
-            AddReward(20.0f);
+            AddReward(1.0f);
             Regenerate = true;
             Debug.Log(GetCumulativeReward());
             EnvManager.SendMessage("SetStartPoint", this.gameObject.transform);
-            Destroy(RouteRenderer.gameObject);
+            if (RouteRenderer != null)
+            {
+                Destroy(RouteRenderer.gameObject);
+            }
             Route.Add(Goal.transform.position);
             EnvManager.GetComponent<Manager>().SetPPOPoint(Route);
             EnvManager.GetComponent<Manager>().SaveRecord();
