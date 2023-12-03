@@ -144,6 +144,8 @@ public class RobotAgent : Agent
             EnvManager.SendMessage("SetStartPoint", this.gameObject.transform);
             Destroy(RouteRenderer.gameObject);
             Route.Add(Goal.transform.position);
+            EnvManager.GetComponent<Manager>().SetPPOPoint(Route);
+            EnvManager.GetComponent<Manager>().SaveRecord();
             Route.Clear();
             EndEpisode();
         }

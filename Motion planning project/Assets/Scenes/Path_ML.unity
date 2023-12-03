@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 43041182}
   - component: {fileID: 43041181}
   - component: {fileID: 43041183}
+  - component: {fileID: 43041184}
   m_Layer: 0
   m_Name: EnvManager
   m_TagString: Untagged
@@ -161,13 +162,15 @@ MonoBehaviour:
   Player: {fileID: 1699460506}
   StartPoint: {fileID: 1550039324}
   PrmScript: {fileID: 43041183}
+  DijScript: {fileID: 43041184}
   GenerateObstacleOnStart: 0
   MoveGoal: 0
   UsePRM: 1
   UseRRT: 1
-  UseDij: 0
+  UseDij: 1
   RRTColor: {fileID: 2100000, guid: fc2f97276e659a44db15db6832032340, type: 2}
   PRMColor: {fileID: 2100000, guid: 40bda4459fce8fd428282e45968f8c44, type: 2}
+  DijColor: {fileID: 2100000, guid: c571b386cff320e42b02f87d52445ca5, type: 2}
 --- !u!4 &43041182
 Transform:
   m_ObjectHideFlags: 0
@@ -200,6 +203,24 @@ MonoBehaviour:
   cube: {fileID: 6268869850497776102, guid: 5f2ff5bd0593cd341855a79af123c0dc, type: 3}
   StartPoint: {fileID: 1550039324}
   Goal: {fileID: 1601149238}
+--- !u!114 &43041184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43041180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b07af547908d124d9c348b65c8ca5b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RoutePoint: {fileID: 4158539369503798670, guid: 9ef3cc781b46e6b4a862342d3ccde5f4, type: 3}
+  Points: []
+  StartPoint: {fileID: 1550039324}
+  Goal: {fileID: 1601149238}
+  NearestSP: 0
+  NearestGL: 0
 --- !u!1001 &350600711
 PrefabInstance:
   m_ObjectHideFlags: 0

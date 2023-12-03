@@ -71,7 +71,6 @@ public class PRM : MonoBehaviour
     void CountObstacle()
     {
         Array.Clear(Plane_map, 0, Plane_map.Length);
-        Debug.Log(Manager.GeneratedObstacles.Count);
         foreach (GameObject Obstacle in Manager.GeneratedObstacles)
         {
             int pos_x = (int)Obstacle.transform.position.x * 4;
